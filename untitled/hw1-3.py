@@ -1,9 +1,8 @@
-import math
-import numpy as np
+
 import random
 import matplotlib.pyplot as plot
-
-c = np.zeros((20,20))
+import numpy as np
+c = [ [0.0]* 501 for i in range(501)]
 
 
 
@@ -18,9 +17,9 @@ def qp( p , b):
 
 def init():
     c[0][0] = 1;
-    for i in range(1,20):
+    for i in range(1,501):
         c[i][0] = 1;
-        for j in range(1,20):
+        for j in range(1,501):
             c[i][j] = c[i-1][j-1] + c[i-1][j];
 
 def getF(p):
@@ -36,7 +35,7 @@ def plotbar(x , y , name):
     plot.xlabel("X");
     plot.ylabel("Y");
     plot.title(name);
-    plot.savefig(name);
+    #plot.savefig(name);
     plot.show()
     return ;
 
@@ -61,7 +60,7 @@ def solve():
 
 
 def solve_2():
-    likelyhood = [0.0] * 11;
+    likelyhood = np.zeros((11));
     #prior = [0.1] * 11;
     prior = [0.01, 0.01, 0.05, 0.08, 0.15, 0.4, 0.15, 0.08, 0.05, 0.01, 0.01];
     posterior=[0.0] * 11;
@@ -87,27 +86,30 @@ def implementation():
 
     posterior = [0.0] * 11;
     sum = 0.0;
-    for _ in range(50):
+    f = [0] * 2;
+    for _ in range(1,101):
         r = 1 if random.uniform(0,100) > 50 else 0;
         f[r] = f[r] + 1;
-        if ( (_+1) % 10 == 0 ):
+        if ( _ % 10 == 0 ):
+            sum = 0;
+            print(f[0], f[1]);
             for i in range(11):
                 p = i * 0.1;
-                likelyhood[i] = c[_+1][f[0]] * qp(p, f[0] ) * (1-p, f[1]);
+                likelyhood[i] = c[f[0]+f[1]][f[0]] * qp(p, f[0] ) * qp(1-p, f[1]);
                 sum = sum + likelyhood[i] * prior[i];
             for i in range(11):
                 posterior[i] = likelyhood[i] * prior[i] / sum;
-        print(prior);
-        print(likelyhood);
-        print(posterior);
-
-        posterior = prior;
+            posterior = prior;
+            if ( _ % 10 == 0):
+                plotbar(range(11),posterior, 'posterior of '+ str(_));
+    return ;
 
 
 def main():
     init();
-    solve();
-    solve_2();
+    #solve();
+    #solve_2();
+    implementation();
     return;
 
 main();
