@@ -5,7 +5,7 @@ y_train = np.load("y_train.npy");
 x_test = np.load("x_test.npy");
 y_test = np.load("y_test.npy");
 
-K = 10000; #  define topK in this place
+K = 100; #  define topK in this place
 
 def debug():
     print(np.size(x_train) , np.size(x_test));

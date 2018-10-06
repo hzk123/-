@@ -2,7 +2,8 @@
 import random
 import matplotlib.pyplot as plot
 import numpy as np
-c = [ [0.0]* 501 for i in range(501)]
+import  math
+c = [ [0.0]* 51 for i in range(51)]
 
 
 
@@ -17,9 +18,9 @@ def qp( p , b):
 
 def init():
     c[0][0] = 1;
-    for i in range(1,501):
+    for i in range(1,51):
         c[i][0] = 1;
-        for j in range(1,501):
+        for j in range(1,51):
             c[i][j] = c[i-1][j-1] + c[i-1][j];
 
 def getF(p):
@@ -35,7 +36,7 @@ def plotbar(x , y , name):
     plot.xlabel("X");
     plot.ylabel("Y");
     plot.title(name);
-    #plot.savefig(name);
+    plot.savefig(name);
     plot.show()
     return ;
 
@@ -87,8 +88,9 @@ def implementation():
     posterior = [0.0] * 11;
     sum = 0.0;
     f = [0] * 2;
-    for _ in range(1,101):
-        r = 1 if random.uniform(0,100) > 50 else 0;
+    g = [];
+    for _ in range(1,51):
+        r = 1 if random.uniform(0,1000) > 500 else 0;
         f[r] = f[r] + 1;
         if ( _ % 10 == 0 ):
             sum = 0;
@@ -101,7 +103,16 @@ def implementation():
                 posterior[i] = likelyhood[i] * prior[i] / sum;
             posterior = prior;
             if ( _ % 10 == 0):
-                plotbar(range(11),posterior, 'posterior of '+ str(_));
+                #plotbar(range(11),posterior, 'posterior of '+ str(_));
+                entropy = 0;
+                for j in range(11):
+                    if (posterior[j] > 0):
+                        entropy = entropy - posterior[j] * math.log(posterior[j])
+                g.append(entropy);
+    print(g);
+    plot.plot(range(len(g)),g);
+    plot.savefig("line");
+    plot.show();
     return ;
 
 
